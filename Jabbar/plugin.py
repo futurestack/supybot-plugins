@@ -64,7 +64,7 @@ class Jabbar(callbacks.Plugin):
         self.faceItems = self.myReadFile("./plugins/Jabbar/data/faces.txt")
         self.pasteSites = ["http://paste2.org","http://pastebin.org/","http://ideone.com","http://rgrd.pastebin.org/","http://www.fpaste.org/"]
         #self.faceItems = ["palms","desks","pianos","trees","plants","books","bombs","derps","bonks","skins"]
-	self.butttext = "butt"
+    self.butttext = "butt"
 
     def randomnick(self, irc, msg, args, channel, nicks):
         """takes no arguments
