@@ -202,6 +202,22 @@ class Jabbar(callbacks.Plugin):
             self.myWriteFile( "./plugins/Jabbar/data/farts.txt", self.fartOptions )
     addfart = wrap(addfart, [additional('text')])
 
+    def removefart(self, irc, msg, args, text):
+        """removes a particularly stupid entry from the "fart" list."""
+        print(text)
+        reply = ""
+        if text == None :
+            reply += "What FART do you wish to REMOVE?"
+            irc.reply(reply, action=True, prefixNick=False)
+        else:
+            for i in range(len(self.fartOptions)):
+                if self.fartOptions[i] == text:
+                    del self.fartOptions[i]
+                    i -= 1
+            print( self.fartOptions )
+            self.myWriteFile( "./plugins/Jabbar/data/farts.txt", self.fartOptions )
+    removefart = wrap(removefart, [additional('text')])
+
     def fart(self, irc, msg, args, text):
         """[<text to be farted upon>]"""
         if text == None :
