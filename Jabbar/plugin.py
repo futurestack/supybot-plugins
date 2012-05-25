@@ -211,7 +211,7 @@ class Jabbar(callbacks.Plugin):
             irc.reply(reply, action=True, prefixNick=False)
         else:
             for i in range(len(self.fartOptions)):
-                if self.fartOptions[i] == text:
+                if self.fartOptions[i].strip() == text.strip():
                     del self.fartOptions[i]
                     i -= 1
             print( self.fartOptions )
