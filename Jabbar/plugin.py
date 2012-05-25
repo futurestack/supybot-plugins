@@ -210,11 +210,9 @@ class Jabbar(callbacks.Plugin):
             reply += "What FART do you wish to REMOVE?"
             irc.reply(reply, action=True, prefixNick=False)
         else:
-            for i in range(len(self.fartOptions)):
-                if self.fartOptions[i].strip() == text.strip():
-                    del self.fartOptions[i]
-                    i -= 1
-            print( self.fartOptions )
+            self.fartOptions = [x for x in self.fartOptions if x!=text];
+            text = text + "\n";
+            self.fartOptions = [x for x in self.fartOptions if x!=text];
             self.myWriteFile( "./plugins/Jabbar/data/farts.txt", self.fartOptions )
     removefart = wrap(removefart, [additional('text')])
 
