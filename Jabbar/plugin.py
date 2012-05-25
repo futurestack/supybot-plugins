@@ -59,9 +59,10 @@ class Jabbar(callbacks.Plugin):
         self.__parent.__init__(irc)
         self.rng = random.Random()   # create our rng
         self.rng.seed()   # automatically seeds with current time
+        self.fartOptions = self.myReadFile("./plugins/Jabbar/data/farts.txt")
         self.lunchOptions = self.myReadFile("./plugins/Jabbar/data/lunch.txt")
         self.faceItems = self.myReadFile("./plugins/Jabbar/data/faces.txt")
-        self.pasteSites = ["http://pastebin.org/","http://ideone.com","http://rgrd.pastebin.org/","http://www.fpaste.org/"]
+        self.pasteSites = ["http://paste2.org","http://pastebin.org/","http://ideone.com","http://rgrd.pastebin.org/","http://www.fpaste.org/"]
         #self.faceItems = ["palms","desks","pianos","trees","plants","books","bombs","derps","bonks","skins"]
 	self.butttext = "butt"
 
@@ -186,6 +187,38 @@ class Jabbar(callbacks.Plugin):
             print( self.faceItems )
             self.myWriteFile( "./plugins/Jabbar/data/lunch.txt", self.lunchOptions )
     lunch = wrap(lunch, [additional('text')])
+
+    def addfart(self, irc, msg, args, text):
+        """Adds a new random entry to the "fart" list."""
+        print(text)
+        reply = ""
+        if text == None :
+            reply += "What FART do you wish to ADD?"
+            irc.reply(reply, action=True, prefixNick=False)
+        else:
+            reply += text.strip()
+            self.fartOptions.append( text+"\n" )
+            print( self.fartOptions )
+            self.myWriteFile( "./plugins/Jabbar/data/farts.txt", self.fartOptions )
+    addfart = wrap(addfart, [additional('text')])
+
+    def fart(self, irc, msg, args, text):
+        """[<text to be farted upon>]"""
+        if text == None :
+            reply += "Nothing here to FART on."
+            irc.reply(reply, action=True, prefixNick=False)
+        else:
+            li = text.split(" ")
+            thefart = (self.rng.choice( self.fartOptions))[:-1]
+            if ( len(li)-1 > 0 ):
+                #which = self.rng.randint(0,len(li)-1)
+                li[self.rng.randint(0,len(li)-1)] = thefart
+                text = " ".join(li)
+            else:
+                text = thefart
+            irc.reply(text)
+    fart = wrap(fart, [additional('text')])
+
     
     def seed(self, irc, msg, args, seed):
         """<seed>
@@ -234,11 +267,12 @@ class Jabbar(callbacks.Plugin):
         irc.reply(random.choice(quotes))
     dune = wrap(dune)
 
-    def eno(self, irc, msg, args):
-        """prod oyster"""
-        irc.reply('!eno')
+def eno(self, irc, msg, args):
+        """quotes at random from Brian Eno's Oblique Strategies deck"""
+        quotes=["Remove specifics and convert to ambiguities","Don't be frightened of cliches","What is the reality of the situation?","Are there sections?  Consider transitions","Turn it upside down","Think of the radio","Allow an easement (an easement is the abandonment of a stricture)","Simple subtraction","Be dirty","Go slowly all the way round the outside","A line has two sides","Make an exhaustive list of everything you might do & do the last thing on the list","Into the impossible","Towards the insignificant","Ask people to work against their better judgement","Take away the elements in order of apparent non-importance","Infinitesimal gradations","Change instrument roles","Accretion","Disconnect from desire","Emphasize repetitions","Faced with a choice, do both","Children-speaking -singing","Lost in useless territory","A very small object Its center","Dont be afraid of things because they're easy to do","Dont be frightened to display your talents","Breathe more deeply","Honor thy error as a hidden intention","What are the sections sections of?  Imagine a caterpillar moving","Only one element of each kind","Is there something missing","Use 'unqualified' people","How would you have done it?","Emphasize differences","Do nothing for as long as possible","Bridges - build - burn","Always give yourself credit for having more than personality","You don't have to be ashamed of using your own ideas","Tidy up","Do the words need changing?","Ask your body","Tape your mouth","Water","Simply a matter of work","Make a sudden, destructive unpredictable action; incorporate","Consult other sources-promising-unpromising","Use an unacceptable color","Humanize something free of error","Use filters","Fill every beat with something","Discard an axiom","Not building a wall but making a brick","What wouldn't you do?","Lowest common denominator","Decorate, decorate","Balance the consistency principle with the inconsistency principle","Get your neck massaged","Listen to the quiet voice","Do the washing up","Is it finished?","Put in earplugs","Reevaluation (a warm feeling)","Give the name away","Intentions-nobility of  -humility of-credibility of","Abandon normal instruments","Use fewer notes","Repetition is a form of change","Give way to your worst impulse","Reverse","Trust in the you of now","Imagine the piece as a set of disconnected events","What would your closest friend do?","Distorting time","Make a blank valuable by putting it in an exquisite frame","Feed the recording back out of the medium","Convert a melodic element into a rhythmic element","The most important thing is the thing most easily forgotten","Ghost echoes","You can only make one dot at a time","Just carry on","(Organic) machinery","The inconsistency principle","Don't break the silence","Idiot glee (?)","Discover the recipes you are using and abandon them","Cascades","Courage!","Spectrum analysis","What mistakes did you make last time?","Consider different fading systems","Mute and continue","Be extravagant","It is quite possible (after all)","What are you really thinking about just now?","Don't stress on thing more than another [sic]","State the problem in words as clearly as possible","Abandon desire","Abandon normal instructions","Accept advice","Adding on","Always the first steps","Be less critical","Bridges -build -burn","Change ambiguities to specifics","Change nothing and continue consistently","Change specifics to ambiguities","Consider transitions","Cut a vital connection","Destroy nothing; Destroy the most important thing","Disciplined self-indulgence","Discover your formulas and abandon them","Display your talent","Distort time","Don't avoid what is easy","Don't stress one thing more than another","Do something boring","Do something sudden, destructive and unpredictable","Do the last thing first","Emphasize the flaws","Faced with a choice, do both (from Dieter Rot)","Find a safe part and use it as an anchor","Give the game away","Go outside. Shut the door.","Go to an extreme, come part way back","How would someone else do it?","In total darkness, or in a very large room, very quietly","Is something missing?","Is the style right?","It is simply a matter or work","Look at the order in which you do things","Magnify the most difficult details","Make it more sensual","Make what's perfect more human","Move towards the unimportant","Not building a wall; making a brick","Once the search has begun, something will be found","Only a part, not the whole","Openly resist change","Pae White's non-blank graphic metacard","Question the heroic","Remember quiet evenings","Remove a restriction","Retrace your steps","Simple Subtraction","Slow preparation, fast execution","State the problem as clearly as possible","Take a break","Take away the important parts","The most easily forgotten thing is the most important","Think -inside the work -outside the work","Try faking it (from Stewart Brand)","Use an old idea","Use cliches","Use something nearby as a model","Use `unqualified' people","Use your own ideas","Voice your suspicions","What context would look right?","What is the simplest solution?","What to increase? What to reduce? What to maintain?","What were you really thinking about just now?","When is it for?","Where is the edge?","Which parts can be grouped?","Work at a different speed","Would anyone want it?","Your mistake was a hidden intention","Assemble some of the elements in a group and treat the group","You are an engineer","Remove ambiguities and convert to specifics","Go outside.  Shut the door.","Do we need holes?","Cluster analysis","Always first steps","Define an area as 'safe' and use it as an anchor","Is the information correct?","Overtly resist change","Question the heroic approach","Twist the spine","Look closely at the most embarrassing details & amplify them","Mechanicalize something idiosyncratic","Remember those quiet evenings","Short circuit (example: a man eating peas with the idea that they will improve his virility shovels them straight into his lap)","Left channel, right channel, center channel","Destroy-nothing-the most important thing","Change nothing and continue with immaculate consistency","The tape is now the music"]
+        irc.reply(random.choice(quotes))
     eno = wrap(eno)
-    
+
 Class = Jabbar
 
 
