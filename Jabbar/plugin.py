@@ -63,23 +63,16 @@ class Jabbar(callbacks.Plugin):
         self.faceItems = self.myReadFile("./plugins/Jabbar/data/faces.txt")
         self.pasteSites = ["http://pastebin.org/","http://ideone.com","http://rgrd.pastebin.org/","http://www.fpaste.org/"]
         #self.faceItems = ["palms","desks","pianos","trees","plants","books","bombs","derps","bonks","skins"]
+	self.butttext = "butt"
 
     def randomnick(self, irc, msg, args, channel, nicks):
         """takes no arguments
-
         a random person in the channel
         """
         channel = ircutils.toLower(channel)
         if len(nicks) == 0:
             nicks = list(irc.state.channels[channel].users)
-            
-            
-                    
-            if len(nicks) == 0:
-                nicks = list(irc.state.channels[channel].users)
 
-        #####
-        #irc.reply('These people are eligible: %s' % utils.str.commaAndify(nicks))
         victim = self.rng.choice(nicks)
         irc.reply(victim)
         try:
@@ -88,7 +81,34 @@ class Jabbar(callbacks.Plugin):
             pass
     randomnick = wrap(randomnick, ['Channel', any('NickInChannel')])
 
+    def bling(self, irc, msg, args, channel, nicks):
+        """takes no arguments
+        a random person in the channel
+        """
+        channel = ircutils.toLower(channel)
+        if len(nicks) == 0:
+            nicks = list(irc.state.channels[channel].users)
+
+        unoppeds = []
         
+        for n in nicks:
+            if not n.ops:
+                unoppeds.append(n)
+        
+        #victim = self.rng.choice(nicks)
+        irc.reply(unoppeds)
+        try:
+            irc.noReply()
+        except AttributeError:
+            pass
+    bling = wrap(bling, ['op', ('haveOp', 'op someone'), any('nickInChannel')])
+
+    def buttset(self,irc, msg, args, text ):
+        """specifies the output of butt."""
+        if  len(text) > 2 :
+            self.butttext = text                
+    buttset = wrap (buttset,[additional('text')] )
+
     def butt(self, irc, msg, args, text):
         """[<text to be butted>]
         someone is apparently really into butts
@@ -96,9 +116,9 @@ class Jabbar(callbacks.Plugin):
         l = len(text)
         if l>4:
             p = random.randrange(0, l-4)
-            irc.reply(text[0:p]+'butt'+text[p+4:l])
+            irc.reply(text[0:p]+self.butttext+text[p+4:l])
         else:
-            irc.reply('butt');
+            irc.reply(self.butttext);
     butt = wrap(butt, [additional('text')])
     
     def butt2(self, irc, msg, args, text):
@@ -106,10 +126,10 @@ class Jabbar(callbacks.Plugin):
         li = text.split(" ")
         if ( len(li)-1 > 0 ):
             #which = self.rng.randint(0,len(li)-1)
-            li[self.rng.randint(0,len(li)-1)] = "butt"
+            li[self.rng.randint(0,len(li)-1)] = self.butttext
             text = " ".join(li)
         else:
-            text = "butt"
+            text = self.butttext
         irc.reply(text)
     butt2 = wrap(butt2, [additional('text')])
 
@@ -153,13 +173,19 @@ class Jabbar(callbacks.Plugin):
         page = f.read()
         f.close
         
-    def lunch(self, irc, msg, args):
-        """takes no arguments.  very specific localization.  mostly useless.
-        """
-        result = random.choice(self.lunchOptions)
-        result = result[:-1]
-        irc.reply(result)
-    lunch = wrap(lunch)
+    def lunch(self, irc, msg, args, text):
+        """<text> optional."""
+        print(text)
+        reply = ""
+        if text == None : 
+            reply += (self.rng.choice( self.lunchOptions))[:-1]
+            irc.reply(reply, action=True, prefixNick=False)
+        else:
+            reply += text.strip()
+            self.faceItems.append( text+"\n" )
+            print( self.faceItems )
+            self.myWriteFile( "./plugins/Jabbar/data/lunch.txt", self.lunchOptions )
+    lunch = wrap(lunch, [additional('text')])
     
     def seed(self, irc, msg, args, seed):
         """<seed>
